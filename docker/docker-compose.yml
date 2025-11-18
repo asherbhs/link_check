@@ -1,0 +1,24 @@
+services:
+  builder:
+    build:
+      context: ./mkdocs-builder
+      dockerfile: Dockerfile
+    volumes:
+      - ../tmp/example-mkdocs:/docs
+      - built-site:/output
+    container_name: mkdocs-builder
+
+  web:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - built-site:/usr/share/nginx/html
+    depends_on:
+      - builder
+    container_name: mkdocs-nginx
+
+volumes:
+  built-site:
